@@ -1,0 +1,32 @@
+{
+  "name": "whenable",
+  "version": "0.0.1",
+  "description": "A lightweight observable",
+  "main": "./dst/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "./node_modules/typescript/bin/tsc",
+    "compile": "npm run tsc && npm run tsc -- --module es6 --outDir dst-esm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicksnyder/whenable.git"
+  },
+  "keywords": [
+    "whenable",
+    "promise",
+    "thenable",
+    "observable",
+    "publish",
+    "subscribe"
+  ],
+  "author": "Nick Snyder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicksnyder/whenable/issues"
+  },
+  "homepage": "https://github.com/nicksnyder/whenable#readme",
+  "devDependencies": {
+    "typescript": "^2.4.1"
+  }
+}
