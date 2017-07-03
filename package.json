@@ -2,11 +2,13 @@
   "name": "whenable",
   "version": "0.0.1",
   "description": "A lightweight observable",
-  "main": "./dst/main.js",
+  "main": "./dst/whenable.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "./node_modules/typescript/bin/tsc",
-    "compile": "npm run tsc && npm run tsc -- --module es6 --outDir dst-esm"
+    "clean": "rm -rf dst dst-esm",
+    "compile": "npm run clean && npm run tsc && npm run tsc -- --module es6 --outDir dst-esm",
+    "test": "mocha -r ts-node/register src/**/*.test.ts"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,10 @@
   },
   "homepage": "https://github.com/nicksnyder/whenable#readme",
   "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.1.0",
     "typescript": "^2.4.1"
   }
 }
