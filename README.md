@@ -3,7 +3,7 @@
 A minimal implementation of an object that supports streams of data.
 
 Whenable is similar to:
-- [RsJS](https://github.com/Reactive-Extensions/RxJS), except whenable is bare-bones.
+- [RsJS Observables](https://github.com/Reactive-Extensions/RxJS), except whenable is bare-bones.
 - Promises, except whenable can emit values many times before completing.
 
 ## Example
