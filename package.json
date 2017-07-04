@@ -4,11 +4,12 @@
   "description": "A lightweight observable",
   "main": "./dst/whenable.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register src/**/*.test.ts",
     "tsc": "./node_modules/typescript/bin/tsc",
     "clean": "rm -rf dst dst-esm",
-    "compile": "npm run clean && npm run tsc && npm run tsc -- --module es6 --outDir dst-esm",
-    "test": "mocha -r ts-node/register src/**/*.test.ts"
+    "compile-es5": "npm run tsc && ./node_modules/uglify-js/bin/uglifyjs dst/whenable.js --compress --mangle --source-map content='dst/whenable.js.map' -o dst/whenable.min.js",
+    "compile-es6": "npm run tsc -- --module es6 --outDir dst-esm && ./node_modules/uglify-es/bin/uglifyjs dst-esm/whenable.js --compress --mangle --source-map content='dst-esm/whenable.js.map' -o dst-esm/whenable.min.js",
+    "compile": "npm run clean && npm run compile-es5 && npm run compile-es6"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,8 @@
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
     "ts-node": "^3.1.0",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.1",
+    "uglify-es": "^3.0.23",
+    "uglify-js": "^3.0.23"
   }
 }
