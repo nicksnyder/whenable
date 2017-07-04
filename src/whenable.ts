@@ -12,7 +12,7 @@ interface Subscriber<V> {
 
 export class Whenable<V> {
 	private subscribers: Subscriber<V>[] = [];
-	private isComplete = false;
+	private complete = false;
 	private error: Error | undefined;
 	private values: V[] = [];
 
@@ -35,36 +35,29 @@ export class Whenable<V> {
 	}
 
 	private handleValue(value: V): void {
-		if (this.isComplete) {
-			return;
-		}
-		this.values.push(value);
-		for (const subscriber of this.subscribers) {
-			subscriber.onvalue(value);
-		}
+		this.handle(subscriber => subscriber.onvalue(value), false);
 	}
 
 	private handleError(error: Error) {
-		if (this.isComplete) {
-			return;
-		}
-		this.isComplete = true;
-		this.error = error;
-		for (const subscriber of this.subscribers) {
-			subscriber.onerror(error);
-		}
-		this.subscribers = [];
+		this.handle(subscriber => subscriber.onerror(error), true, error);
 	}
 
 	private handleComplete() {
-		if (this.isComplete) {
+		this.handle(subscriber => subscriber.oncomplete(), true);
+	}
+
+	private handle(handler: (subscriber: Subscriber<V>) => void, complete: boolean, error?: Error): void {
+		if (this.complete) {
 			return;
 		}
-		this.isComplete = true;
+		this.complete = complete;
+		this.error = error
 		for (const subscriber of this.subscribers) {
-			subscriber.oncomplete();
+			handler(subscriber);
 		}
-		this.subscribers = [];
+		if (complete) {
+			this.subscribers = [];
+		}
 	}
 
 	public when<T>(onvalue: (value: V) => T, onerror?: (error: Error) => void, oncomplete?: () => void): Whenable<T> {
@@ -91,7 +84,7 @@ export class Whenable<V> {
 		for (const value of this.values) {
 			subscriber.onvalue(value);
 		}
-		if (this.isComplete) {
+		if (this.complete) {
 			if (this.error) {
 				subscriber.onerror(this.error);
 			} else {
