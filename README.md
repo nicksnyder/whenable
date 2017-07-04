@@ -1,7 +1,4 @@
-# whenable [![travis][travis-image]][travis-url]
-
-[travis-image]: https://img.shields.io/travis/nicksnyder/whenable.svg?style=flat
-[travis-url]: https://travis-ci.org/nicksnyder/whenable
+# whenable [![travis](https://img.shields.io/travis/nicksnyder/whenable.svg?style=flat)](https://travis-ci.org/nicksnyder/whenable)
 
 A minimal implementation of an object that supports streams of data.
 
