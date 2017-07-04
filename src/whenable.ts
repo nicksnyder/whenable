@@ -12,7 +12,7 @@ interface Subscriber<V> {
 
 export class Whenable<V> {
 	private subscribers: Subscriber<V>[] = [];
-	private isComplete = false;
+	private complete = false;
 	private error: Error | undefined;
 	private values: V[] = [];
 
@@ -35,7 +35,7 @@ export class Whenable<V> {
 	}
 
 	private handleValue(value: V): void {
-		if (this.isComplete) {
+		if (this.complete) {
 			return;
 		}
 		this.values.push(value);
@@ -45,10 +45,10 @@ export class Whenable<V> {
 	}
 
 	private handleError(error: Error) {
-		if (this.isComplete) {
+		if (this.complete) {
 			return;
 		}
-		this.isComplete = true;
+		this.complete = true;
 		this.error = error;
 		for (const subscriber of this.subscribers) {
 			subscriber.onerror(error);
@@ -57,10 +57,10 @@ export class Whenable<V> {
 	}
 
 	private handleComplete() {
-		if (this.isComplete) {
+		if (this.complete) {
 			return;
 		}
-		this.isComplete = true;
+		this.complete = true;
 		for (const subscriber of this.subscribers) {
 			subscriber.oncomplete();
 		}
@@ -91,7 +91,7 @@ export class Whenable<V> {
 		for (const value of this.values) {
 			subscriber.onvalue(value);
 		}
-		if (this.isComplete) {
+		if (this.complete) {
 			if (this.error) {
 				subscriber.onerror(this.error);
 			} else {
