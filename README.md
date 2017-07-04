@@ -9,7 +9,6 @@ Similar to:
 ## Example
 
 ```ts
-
 import { Whenable } from 'whenable';
 
 const whenable = new Whenable<number>((value, error, complete) => {
