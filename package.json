@@ -2,13 +2,13 @@
   "name": "whenable",
   "version": "0.0.1",
   "description": "A lightweight observable",
-  "main": "./dst/whenable.js",
+  "main": "./lib-es5/whenable.js",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "tsc": "./node_modules/typescript/bin/tsc",
-    "clean": "rm -rf dst dst-esm",
-    "compile-es5": "npm run tsc && ./node_modules/uglify-js/bin/uglifyjs dst/whenable.js --compress --mangle --source-map content='dst/whenable.js.map' -o dst/whenable.min.js",
-    "compile-es6": "npm run tsc -- --module es6 --outDir dst-esm && ./node_modules/uglify-es/bin/uglifyjs dst-esm/whenable.js --compress --mangle --source-map content='dst-esm/whenable.js.map' -o dst-esm/whenable.min.js",
+    "clean": "rm -rf lib-*",
+    "compile-es5": "npm run tsc && ./node_modules/uglify-js/bin/uglifyjs lib-es5/whenable.js --compress --mangle --source-map content='lib-es5/whenable.js.map' -o lib-es5/whenable.min.js",
+    "compile-es6": "npm run tsc -- --module es6 --outDir lib-es6 && ./node_modules/uglify-es/bin/uglifyjs lib-es6/whenable.js --compress --mangle --source-map content='lib-es6/whenable.js.map' -o lib-es6/whenable.min.js",
     "compile": "npm run clean && npm run compile-es5 && npm run compile-es6"
   },
   "repository": {
