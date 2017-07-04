@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/nicksnyder/whenable#readme",
   "devDependencies": {
+    "@types/chai": "^4.0.1",
     "@types/mocha": "^2.2.41",
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
