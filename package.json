@@ -1,15 +1,15 @@
 {
   "name": "whenable",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A lightweight observable",
-  "main": "./lib-es5/whenable.js",
+  "main": "./lib/whenable.js",
+  "types": "./lib/whenable.d.ts",
   "scripts": {
+    "prepublish": "npm run compile",
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "tsc": "./node_modules/typescript/bin/tsc",
-    "clean": "rm -rf lib-*",
-    "compile-es5": "npm run tsc && ./node_modules/uglify-js/bin/uglifyjs lib-es5/whenable.js --compress --mangle --source-map content='lib-es5/whenable.js.map' -o lib-es5/whenable.min.js",
-    "compile-es6": "npm run tsc -- --module es6 --outDir lib-es6 && ./node_modules/uglify-es/bin/uglifyjs lib-es6/whenable.js --compress --mangle --source-map content='lib-es6/whenable.js.map' -o lib-es6/whenable.min.js",
-    "compile": "npm run clean && npm run compile-es5 && npm run compile-es6"
+    "clean": "rm -rf lib",
+    "compile": "npm run clean && npm run tsc && ./node_modules/uglify-es/bin/uglifyjs lib/whenable.js --compress --mangle --source-map content='lib/whenable.js.map' -o lib/whenable.min.js"
   },
   "repository": {
     "type": "git",
