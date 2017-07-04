@@ -44,7 +44,7 @@ export class Whenable<V> {
 		}
 	}
 
-	private handleError(error: Error) {
+	private handleError(error: Error): void {
 		if (this.complete) {
 			return;
 		}
@@ -56,7 +56,7 @@ export class Whenable<V> {
 		this.subscribers = [];
 	}
 
-	private handleComplete() {
+	private handleComplete(): void {
 		if (this.complete) {
 			return;
 		}
