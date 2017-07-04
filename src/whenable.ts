@@ -67,7 +67,7 @@ export class Whenable<V> {
 		this.subscribers = [];
 	}
 
-	public when<T>(onvalue: (value: V) => T, onerror: (error: Error) => void, oncomplete: () => void): Whenable<T> {
+	public when<T>(onvalue: (value: V) => T, onerror?: (error: Error) => void, oncomplete?: () => void): Whenable<T> {
 		const whenable = new Whenable<T>();
 		const subscriber: Subscriber<V> = {
 			onvalue: (value: V) => {
@@ -75,18 +75,23 @@ export class Whenable<V> {
 			},
 			onerror: (error: Error) => {
 				// TODO: allow aborting error?
-				onerror(error);
+				if (onerror) {
+					onerror(error);
+				}
 				whenable.handleError(error);
 			},
 			oncomplete: () => {
-				oncomplete();
+				if (oncomplete) {
+					oncomplete();
+				}
 				whenable.handleComplete();
 			},
 		};
+		// TODO: async?
+		for (const value of this.values) {
+			subscriber.onvalue(value);
+		}
 		if (this.isComplete) {
-			for (const value of this.values) {
-				subscriber.onvalue(value);
-			}
 			if (this.error) {
 				subscriber.onerror(this.error);
 			} else {

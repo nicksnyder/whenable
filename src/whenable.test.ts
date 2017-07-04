@@ -11,13 +11,13 @@ const expectedError = new Error('expected');
 
 function testSyncAndAsync<T>(description: string, testCase: TestCase<T>): void {
     describe(description, function () {
-        it('synchronously', function (done) {
+        it('.when called synchronously', function (done) {
             testCase.verify(testCase.create(), () => {
                 setImmediate(done);
             });
         });
 
-        it('asynchronously', function (done) {
+        it('.when called asynchronously', function (done) {
             const whenable = testCase.create();
             setImmediate(() => {
                 testCase.verify(whenable, () => {
@@ -106,7 +106,7 @@ describe('Whenable', function () {
             },
         });
 
-        testSyncAndAsync('should record error', {
+        testSyncAndAsync('record synchronous value and error', {
             create() {
                 return new Whenable<string>((value, error, complete) => {
                     value('1');
@@ -128,12 +128,16 @@ describe('Whenable', function () {
             },
         });
 
-        testSyncAndAsync('should record thrown error', {
+        testSyncAndAsync('record asynchronous value and error', {
             create() {
                 return new Whenable<string>((value, error, complete) => {
                     value('1');
-                    value('2');
-                    throw expectedError;
+                    setImmediate(() => {
+                        value('2');
+                        setImmediate(() => {
+                            error(expectedError);
+                        });
+                    });
                 });
             },
             verify(whenable, done) {
@@ -150,7 +154,7 @@ describe('Whenable', function () {
             },
         });
 
-        testSyncAndAsync('should record complete', {
+        testSyncAndAsync('record synchronous value and complete', {
             create() {
                 return new Whenable<number>((value, error, complete) => {
                     value(1);
@@ -172,15 +176,114 @@ describe('Whenable', function () {
             },
         });
 
-        testSyncAndAsync('empty', {
+        testSyncAndAsync('record async value and complete', {
             create() {
                 return new Whenable<number>((value, error, complete) => {
+                    value(1);
+                    setImmediate(() => {
+                        value(2);
+                        setImmediate(() => {
+                            complete();
+                        })
+                    })
                 });
             },
             verify(whenable, done) {
-                done();
+                let i = 0;
+                whenable.when(value => {
+                    i++;
+                    expect(value).equals(i);
+                }, error => {
+                    done(error);
+                }, () => {
+                    expect(i).equals(2);
+                    done();
+                });
             },
         });
+
+        testSyncAndAsync('should chain values', {
+            create() {
+                return new Whenable<number>((value, error, complete) => {
+                    value(1);
+                    complete();
+                });
+            },
+            verify(whenable: Whenable<number>, done) {
+                whenable.when(value => {
+                    return (-1 * value).toString();
+                }).when(value => {
+                    expect(value).equals('-1');
+                }).when(value => {
+                    done();
+                });
+            },
+        });
+
+        testSyncAndAsync('should chain errors', {
+            create() {
+                return new Whenable<number>((value, error, complete) => {
+                    error(expectedError);
+                });
+            },
+
+            verify(whenable: Whenable<number>, done) {
+                let i = 0;
+                whenable.when(value => {
+                    done(new Error('should not value'));
+                }, error => {
+                    i++;
+                    expect(error).equals(expectedError);
+                }).when(value => {
+                    done(new Error('should not value'));
+                }, error => {
+                    i++;
+                    expect(error).equals(expectedError);
+                    expect(i).equals(2);
+                    done();
+                });
+            },
+        });
+
+        testSyncAndAsync('should chain complete', {
+            create() {
+                return new Whenable<number>((value, error, complete) => {
+                    complete();
+                });
+            },
+
+            verify(whenable: Whenable<number>, done) {
+                let i = 0;
+                whenable.when(value => {
+                    done(new Error('should not value'));
+                }, error => {
+                    done(new Error('should not error'));
+                }, () => {
+                    i++;
+                }).when(value => {
+                    done(new Error('should not value'));
+                }, error => {
+                    done(new Error('should not error'));
+                }, () => {
+                    i++;
+                    expect(i).equals(2);
+                    done();
+                });
+            },
+        });
+
+        // testSyncAndAsync('empty', {
+        //     create() {
+        //         return new Whenable<number>((value, error, complete) => {
+        //         });
+        //     },
+        //     verify(whenable, done) {
+        //         whenable.when(value => {
+        //         }, error => {
+        //         }, () => {
+        //         });
+        //     },
+        // });
 
     });
 });
